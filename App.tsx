@@ -4,14 +4,17 @@
  *
  * @format
  */
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useRef } from 'react';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
+import { RootStackParamList } from './src/navigation/AppNavigator';
 
 const App = () => {
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
+
   return (
-    <NavigationContainer>
-      <AppNavigator />
+    <NavigationContainer ref={navigationRef}>
+      <AppNavigator navigationRef={navigationRef} />
     </NavigationContainer>
   );
 };

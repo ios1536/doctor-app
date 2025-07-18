@@ -75,8 +75,8 @@
         <category android:name="android.intent.category.BROWSABLE" />
 
         <data
-            android:host="open"
-            android:scheme="bohe" />
+            android:scheme="bohe"
+            android:host="open" />
     </intent-filter>
     </activity>
   </application>
