@@ -67,6 +67,17 @@
           android:host="m.sandbox.fh21.com.cn"
           android:pathPrefix="/open" />
       </intent-filter>
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+            android:host="open"
+            android:scheme="bohe" />
+    </intent-filter>
     </activity>
   </application>
 </manifest>
