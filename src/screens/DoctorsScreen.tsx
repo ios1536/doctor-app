@@ -52,6 +52,7 @@ const VideoItem: FC<VideoComProps> = ({item, _bottomPadding, componentHeight, cu
   const videoRef = useRef<VideoRef>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isManuallyPaused, setIsManuallyPaused] = useState(false);
+  const [isTextExpanded, setIsTextExpanded] = useState(false);
 
   // const show = useMemo(() => {
   //   // 始终显示视频，但只在当前视频时播放
@@ -78,17 +79,7 @@ const VideoItem: FC<VideoComProps> = ({item, _bottomPadding, componentHeight, cu
   }, [curIndex, itemIndex, isManuallyPaused, show]);
 
   return (
-    <Pressable
-      onPress={() => {
-        const newPlayingState = !isPlaying;
-        setIsPlaying(newPlayingState);
-        // 如果手动暂停，记录状态
-        if (!newPlayingState) {
-          setIsManuallyPaused(true);
-        } else {
-          setIsManuallyPaused(false);
-        }
-      }}
+    <View
       style={{
         width: '100%',
         height: componentHeight,
@@ -97,7 +88,17 @@ const VideoItem: FC<VideoComProps> = ({item, _bottomPadding, componentHeight, cu
         backgroundColor: 'black',
       }}
     >
-      <View
+      <Pressable
+        onPress={() => {
+          const newPlayingState = !isPlaying;
+          setIsPlaying(newPlayingState);
+          // 如果手动暂停，记录状态
+          if (!newPlayingState) {
+            setIsManuallyPaused(true);
+          } else {
+            setIsManuallyPaused(false);
+          }
+        }}
         style={{
           width: screenWidth,
           height: videoHeight,
@@ -145,7 +146,9 @@ const VideoItem: FC<VideoComProps> = ({item, _bottomPadding, componentHeight, cu
             <Icon name="play" size={80} color="rgba(255, 255, 255, 0.7)" />
           </View>
         )}
-      </View>
+      </Pressable>
+      
+      {/* 文本区域，独立于视频点击区域 */}
       <View style={[styles.contentOverlay, {width: screenWidth}]}>
         <View style={styles.authorInfo}>
           <Image
@@ -156,21 +159,42 @@ const VideoItem: FC<VideoComProps> = ({item, _bottomPadding, componentHeight, cu
           <Text style={styles.authorName}>{item.doctor?.zname || '医生'}</Text>
           <Text style={styles.authorTitle}>{item.doctor?.position_name || '医师'}</Text>
         </View>
-        <Text style={styles.description} numberOfLines={3}>
+        <Text 
+          style={styles.description} 
+          numberOfLines={isTextExpanded ? undefined : 3}
+          onPress={() => {
+            console.log('点击了描述文本，切换展开状态');
+            setIsTextExpanded(!isTextExpanded);
+          }}
+        >
           {item.description}
-          <Text
-            style={styles.seeMore}
-            onPress={e => {
-              e.stopPropagation(); // 阻止冒泡，不影响播放/暂停
-              // 跳转到文字版页面
-              console.log('点击查看文字版');
-            }}
-          >
-            ...查看文字版
-          </Text>
+          {!isTextExpanded && (
+            <Text
+              style={styles.seeMore}
+              onPress={e => {
+                e.stopPropagation(); // 阻止冒泡，不影响播放/暂停
+                console.log('点击了展开按钮');
+                setIsTextExpanded(true);
+              }}
+            >
+              ...展开
+            </Text>
+          )}
+          {isTextExpanded && (
+            <Text
+              style={styles.seeMore}
+              onPress={e => {
+                e.stopPropagation(); // 阻止冒泡，不影响播放/暂停
+                console.log('点击了收起按钮');
+                setIsTextExpanded(false);
+              }}
+            >
+              {'\n'}收起
+            </Text>
+          )}
         </Text>
       </View>
-    </Pressable>
+    </View>
   );
 };
 
@@ -190,6 +214,23 @@ const DoctorsScreen: FC = () => {
       try {
         setLoading(true);
         const data = await getVideoList(1, ''); // 首页 page=1, uuid空
+        
+        console.log('=== 获取到的视频数据 ===');
+        console.log('数据总数:', data?.length);
+        if (data && data.length > 0) {
+          data.forEach((item: VideoInfo, index: number) => {
+            console.log(`\n--- 第${index + 1}个视频 ---`);
+            console.log('标题:', item.title);
+            console.log('描述:', item.description);
+            console.log('描述长度:', item.description?.length);
+            console.log('医生姓名:', item.doctor?.zname);
+            console.log('医生职位:', item.doctor?.position_name);
+            console.log('视频URL:', item.video_url);
+            console.log('网页URL:', item.wap_url);
+          });
+        }
+        console.log('==================');
+        
         setVideoData(data);
         setPage(1);
         setHasMore(data && data.length === 10);
@@ -214,7 +255,21 @@ const DoctorsScreen: FC = () => {
       const nextPage = page + 1;
       const lastUuid = videoData.length > 0 ? videoData[videoData.length - 1].uuid : '';
       const moreData = await getVideoList(nextPage, lastUuid);
-      console.log('加载更多接口返回数据:', moreData);
+      
+      console.log('=== 加载更多视频数据 ===');
+      console.log('加载更多数据总数:', moreData?.length);
+      if (moreData && moreData.length > 0) {
+        moreData.forEach((item: VideoInfo, index: number) => {
+          console.log(`\n--- 加载更多第${index + 1}个视频 ---`);
+          console.log('标题:', item.title);
+          console.log('描述:', item.description);
+          console.log('描述长度:', item.description?.length);
+          console.log('医生姓名:', item.doctor?.zname);
+          console.log('医生职位:', item.doctor?.position_name);
+        });
+      }
+      console.log('==================');
+      
       setVideoData(prev => [...prev, ...(moreData || [])]);
       setPage(nextPage);
       setHasMore(moreData && moreData.length === 10);
@@ -297,18 +352,18 @@ const DoctorsScreen: FC = () => {
         />
       </View>
 
-      <SafeAreaView style={styles.headerContainer}>
+      {/* 隐藏头部区域 */}
+      {/* <SafeAreaView style={styles.headerContainer}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => handleHeaderPress('有来')}>
-            {/* <Text style={styles.headerText}>有来</Text> */}
+            <Text style={styles.headerText}>有来</Text>
           </TouchableOpacity>
-          {/* 删除推荐、科普、小视频按钮，只保留右侧更多选项 */}
           <View style={{flex: 1}} />
           <TouchableOpacity onPress={() => handleHeaderPress('更多选项')}>
             <Icon name="dots-horizontal" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </SafeAreaView> */}
     </View>
   );
 };
