@@ -73,10 +73,11 @@ const MainTabNavigator = () => {
 };
 
 interface AppNavigatorProps {
-  navigationRef: React.RefObject<NavigationContainerRef<RootStackParamList>>;
+  navigationRef: React.RefObject<NavigationContainerRef<RootStackParamList> | null>;
+  isPrivacyAgreed?: boolean;
 }
 
-const AppNavigator = ({ navigationRef }: AppNavigatorProps) => {
+const AppNavigator = ({ navigationRef, isPrivacyAgreed = true }: AppNavigatorProps) => {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
 
   useEffect(() => {
@@ -236,8 +237,8 @@ const AppNavigator = ({ navigationRef }: AppNavigatorProps) => {
     return () => sub.remove();
   }, []);
 
-  if (initialRoute === null) {
-    return null; // or a loading screen
+  if (initialRoute === null || !isPrivacyAgreed) {
+    return null; // 等待隐私政策同意或加载中
   }
 
   return (

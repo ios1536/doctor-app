@@ -19,6 +19,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { getBannerData, getHotNewsData, getSelectedDoctors, getHotDiseases, getScienceArticles, getNavData, getDiseNavData, checkAppVersion } from '../services/api';
 import Banner from '../components/Banner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isPersonalizedRecommendationEnabled, filterContentByRecommendation } from '../utils/recommendationUtils';
 
 const { width } = Dimensions.get('window');
 const BANNER_WIDTH = width - 30; // 考虑左右padding
@@ -45,6 +46,16 @@ const HomeScreen = ({ navigation }: any) => {
   const [departmentActions, setDepartmentActions] = useState([]);
   const [departmentActionsLoading, setDepartmentActionsLoading] = useState(true);
   const [departmentMoreUrl, setDepartmentMoreUrl] = useState('https://m.bohe.cn/dise/list/1_4.html');
+  const [isRecommendationEnabled, setIsRecommendationEnabled] = useState(true);
+
+  // 检查个性化推荐设置
+  useEffect(() => {
+    const checkRecommendationSetting = async () => {
+      const enabled = await isPersonalizedRecommendationEnabled();
+      setIsRecommendationEnabled(enabled);
+    };
+    checkRecommendationSetting();
+  }, []);
 
   // 获取 banner 数据
   useEffect(() => {
@@ -52,7 +63,9 @@ const HomeScreen = ({ navigation }: any) => {
       try {
         setLoading(true);
         const data = await getBannerData();
-        setBannerData(data);
+        // 根据个性化推荐设置过滤banner数据
+        const filteredData = filterContentByRecommendation(data, isRecommendationEnabled);
+        setBannerData(filteredData);
       } catch (error) {
         console.error('获取banner数据失败:', error);
         Alert.alert('提示', '获取banner数据失败，请稍后重试');
@@ -61,7 +74,7 @@ const HomeScreen = ({ navigation }: any) => {
       }
     };
     fetchBannerData();
-  }, []);
+  }, [isRecommendationEnabled]);
 
   // 获取今日热门新闻数据
   useEffect(() => {

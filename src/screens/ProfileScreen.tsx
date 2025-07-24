@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PersonalizedRecommendationSwitch from '../components/PersonalizedRecommendationSwitch';
 
 const ProfileScreen = ({ navigation }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -218,41 +219,49 @@ const ProfileScreen = ({ navigation }: any) => {
             </View>
           </View>
         </View>
-
         <View style={styles.mainContent}>
+          {/* 隐私政策和服务协议 */}
+          <View style={styles.sectionCard}>
+            {legalItems.map((item, index) => (
+              <TouchableOpacity 
+                key={index} 
+                style={[
+                  styles.menuItem, 
+                  index === legalItems.length - 1 && styles.lastMenuItem
+                ]} 
+                onPress={() => handleNavigation(item.title)}
+              >
+                <Text style={styles.menuItemText}>{item.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* 个性化推荐设置 */}
+          <View style={styles.sectionCard}>
+            <PersonalizedRecommendationSwitch 
+              onToggle={(enabled) => {
+                console.log('个性化推荐开关状态:', enabled);
+              }}
+            />
+          </View>
+
           {isLoggedIn ? (
             <>
-              {/* Legal Section */}
+              {/* 注销账号 */}
               <View style={styles.sectionCard}>
-                  {legalItems.map((item, index) => (
-                      <TouchableOpacity key={index} style={styles.menuItem} onPress={() => handleNavigation(item.title)}>
-                          <Text style={styles.menuItemText}>{item.title}</Text>
-                      </TouchableOpacity>
-                  ))}
-                  
-                  {/* 注销账号 */}
-                  <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAccount}>
-                      <Text style={styles.menuItemText}>注销账号</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAccount}>
+                  <Text style={styles.menuItemText}>注销账号</Text>
+                </TouchableOpacity>
               </View>
 
-              {/* Logout Section */}
+              {/* 退出登录 */}
               <View style={styles.sectionCard}>
-                  <TouchableOpacity style={styles.logoutItem} onPress={handleLogout}>
-                      <Text style={styles.logoutText}>退出登录</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                  <Text style={styles.logoutText}>退出登录</Text>
+                </TouchableOpacity>
               </View>
             </>
           ) : null}
-
-          {/* Legal Section - 未登录时也显示 */}
-          <View style={styles.sectionCard}>
-              {legalItems.map((item, index) => (
-                  <TouchableOpacity key={index} style={styles.menuItem} onPress={() => handleNavigation(item.title)}>
-                      <Text style={styles.menuItemText}>{item.title}</Text>
-                  </TouchableOpacity>
-              ))}
-          </View>
         </View>
 
       </ScrollView>

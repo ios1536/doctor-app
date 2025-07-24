@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -19,6 +20,7 @@ const LoginScreen = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [isAgreedToTerms, setIsAgreedToTerms] = useState(false);
 
   const sendVerificationCode = async () => {
     if (!phone) {
@@ -87,6 +89,11 @@ const LoginScreen = ({ navigation }: any) => {
 
     if (!/^\d{4}$/.test(verificationCode)) {
       Alert.alert('提示', '请输入4位验证码');
+      return;
+    }
+
+    if (!isAgreedToTerms) {
+      Alert.alert('提示', '请先阅读并同意用户协议和隐私政策');
       return;
     }
     
@@ -200,6 +207,34 @@ const LoginScreen = ({ navigation }: any) => {
               <Text style={styles.loginButtonText}>登录</Text>
             )}
           </TouchableOpacity>
+
+          {/* 隐私政策和用户协议勾选框 */}
+          <View style={styles.termsContainer}>
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => setIsAgreedToTerms(!isAgreedToTerms)}
+            >
+              <View style={[styles.checkbox, isAgreedToTerms && styles.checkboxChecked]}>
+                {isAgreedToTerms && <View style={styles.checkboxInner} />}
+              </View>
+              <Text style={styles.termsText}>
+                已阅读并同意
+                <Text style={styles.termsLink} onPress={() => navigation.navigate('WebView', { 
+                  url: 'https://bhapp.bohe.cn/article_api/app/server', 
+                  title: '用户协议' 
+                })}>
+                  《用户协议》
+                </Text>
+                和
+                <Text style={styles.termsLink} onPress={() => navigation.navigate('WebView', { 
+                  url: 'https://bhapp.bohe.cn/article_api/app/privacy', 
+                  title: '隐私协议' 
+                })}>
+                  《隐私协议》
+                </Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -286,6 +321,45 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  termsContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: '#DDDDDD',
+    borderRadius: 4,
+    marginRight: 10,
+    marginTop: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    borderColor: '#007AFF',
+    backgroundColor: '#007AFF',
+  },
+  checkboxInner: {
+    width: 8,
+    height: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2,
+  },
+  termsText: {
+    fontSize: 14,
+    color: '#666666',
+    lineHeight: 20,
+    flex: 1,
+  },
+  termsLink: {
+    color: '#007AFF',
+    textDecorationLine: 'underline',
   },
 });
 

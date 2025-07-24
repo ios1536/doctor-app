@@ -32,7 +32,7 @@
         <data
           android:scheme="https"
           android:host="m.bohe.cn"
-          android:pathPrefix="/open" />
+          android:pathPrefix="/ask" />
         <data
           android:scheme="https"
           android:host="m.fh21.com.cn"
