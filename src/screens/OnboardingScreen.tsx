@@ -24,19 +24,13 @@ const onboardingData: OnboardingItem[] = [
   {
     id: 1,
     title: '名医专家',
-    description: '精准匹配对症选医',
+    description: '权威健康科普内容',
     image: require('../Asset/onboarding1.png'),
   },
   {
     id: 2,
-    title: '互联网医院',
-    description: '在线预约在线问诊',
-    image: require('../Asset/onboarding2.png'),
-  },
-  {
-    id: 3,
-    title: '在线咨询',
-    description: '一对一专家对话贴心服务',
+    title: '权威数据',
+    description: '视频，语音，文章，内容',
     image: require('../Asset/onboarding3.png'),
   },
 ];

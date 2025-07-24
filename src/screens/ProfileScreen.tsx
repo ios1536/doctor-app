@@ -149,8 +149,18 @@ const ProfileScreen = ({ navigation }: any) => {
               console.log('=== 注销账号请求 ===');
               console.log('手机号:', userPhone);
               console.log('Token:', userToken);
+              console.log('Token长度:', userToken?.length);
+              console.log('Token是否为空:', !userToken);
               
               // 调用注销账号接口
+              console.log('=== 注销账号API调用 ===');
+              console.log('请求URL:', 'https://bhapp.bohe.cn/article_api/user/del');
+              console.log('请求方法:', 'POST');
+              console.log('请求体:', JSON.stringify({
+                phone: userPhone,
+                token: userToken,
+              }, null, 2));
+              
               const response = await fetch('https://bhapp.bohe.cn/article_api/user/del', {
                 method: 'POST',
                 headers: {
@@ -162,6 +172,10 @@ const ProfileScreen = ({ navigation }: any) => {
                 }),
               });
 
+              console.log('=== 注销账号HTTP响应 ===');
+              console.log('HTTP状态码:', response.status);
+              console.log('响应头:', response.headers);
+
               const data = await response.json();
               
               console.log('=== 注销账号响应 ===');
@@ -169,7 +183,7 @@ const ProfileScreen = ({ navigation }: any) => {
               console.log('响应状态码:', data.code);
               console.log('响应消息:', data.message);
               
-              if (data.code === 200) {
+              if (data.errno === 0) {
                 // 清除登录状态
                 await AsyncStorage.removeItem('isLoggedIn');
                 await AsyncStorage.removeItem('userToken');
@@ -322,16 +336,14 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
       borderBottomColor: '#F5F5F5',
   },
+  lastMenuItem: {
+      borderBottomWidth: 0,
+  },
   menuItemText: {
       flex: 1,
       marginLeft: 15,
       fontSize: 16,
       color: '#333',
-  },
-  logoutItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: 15,
   },
   logoutText: {
       flex: 1,

@@ -130,9 +130,21 @@ const LoginScreen = ({ navigation }: any) => {
       
       if (data.errno === 0) {
         // 登录成功
+        const token = data.data?.token || '';
+        console.log('=== 存储用户信息 ===');
+        console.log('存储的Token:', token);
+        console.log('存储的手机号:', phone);
+        
         await AsyncStorage.setItem('isLoggedIn', 'true');
-        await AsyncStorage.setItem('userToken', data.data?.token || '');
+        await AsyncStorage.setItem('userToken', token);
         await AsyncStorage.setItem('userPhone', phone);
+        
+        // 验证存储是否成功
+        const storedToken = await AsyncStorage.getItem('userToken');
+        const storedPhone = await AsyncStorage.getItem('userPhone');
+        console.log('验证存储 - Token:', storedToken);
+        console.log('验证存储 - 手机号:', storedPhone);
+        
         // 返回到上一个页面（ProfileScreen）
         navigation.goBack();
       } else {

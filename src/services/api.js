@@ -28,11 +28,34 @@ const request = async (url, options = {}) => {
 // Banner API
 export const getBannerData = async () => {
   try {
+    console.log('=== 开始获取Banner数据 ===');
     const response = await request(`${BASE_URL}/article_api/index/banner`);
     
+    console.log('=== Banner API 完整响应 ===');
+    console.log('完整响应对象:', JSON.stringify(response, null, 2));
+    console.log('响应状态码:', response.errno);
+    console.log('响应消息:', response.errmsg);
+    
+    if (response.banners) {
+      console.log('=== Banner数据详情 ===');
+      console.log('Banner数量:', response.banners.length);
+      response.banners.forEach((banner, index) => {
+        console.log(`Banner ${index + 1}:`, {
+          title: banner.title,
+          image: banner.image,
+          url: banner.url,
+          isRecommendation: banner.isRecommendation || false,
+          // 打印其他可能的字段
+          ...banner
+        });
+      });
+    }
+    
     if (response.errno === 0) {
+      console.log('=== Banner数据获取成功 ===');
       return response.banners;
     } else {
+      console.error('Banner API返回错误:', response.errmsg);
       throw new Error(response.errmsg || '获取banner数据失败');
     }
   } catch (error) {

@@ -67,24 +67,26 @@ const PersonalizedRecommendationSwitch: React.FC<PersonalizedRecommendationSwitc
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
+    paddingVertical: 15,
   },
   switchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 0,
   },
   label: {
     fontSize: 16,
     color: '#333333',
     fontWeight: '500',
+    marginLeft: 15,
   },
   description: {
     fontSize: 12,
     color: '#666666',
-    marginTop: 4,
+    marginTop: 8,
     lineHeight: 16,
+    marginLeft: 15,
   },
 });
 
