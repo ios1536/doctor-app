@@ -22,6 +22,8 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
 
+
+
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
 
@@ -33,40 +35,14 @@
           android:scheme="https"
           android:host="m.bohe.cn"
           android:pathPrefix="/ask" />
-        <data
-          android:scheme="https"
-          android:host="m.fh21.com.cn"
-          android:pathPrefix="/open" />
-        <data
-          android:scheme="https"
-          android:host="s.fh21.com.cn"
-          android:pathPrefix="/open" />
-        <data
-          android:scheme="https"
-          android:host="g.fh21.com.cn"
-          android:pathPrefix="/open" />
-        <data
-          android:scheme="https"
-          android:host="wap.fh21.com.cn"
-          android:pathPrefix="/open" />
+          <data
+          android:scheme="http"
+          android:host="m.bohe.cn"
+          android:pathPrefix="/ask" />
+         
       </intent-filter>
 
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-
-        <!-- HTTP domains (test environments) -->
-        <data
-          android:scheme="http"
-          android:host="m.sandbox.bohe.cn"
-          android:pathPrefix="/open" />
-        <data
-          android:scheme="http"
-          android:host="m.sandbox.fh21.com.cn"
-          android:pathPrefix="/open" />
-      </intent-filter>
+      
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
@@ -75,9 +51,12 @@
         <category android:name="android.intent.category.BROWSABLE" />
 
         <data
-            android:scheme="bohe"
-            android:host="open" />
+          android:scheme="bohe"
+          android:host="m.bohe.cn"
+          android:pathPrefix="/ask" />
     </intent-filter>
+    
+
     </activity>
   </application>
 </manifest>

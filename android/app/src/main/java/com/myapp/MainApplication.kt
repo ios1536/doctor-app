@@ -9,6 +9,11 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
+import cn.bohe.quanwei.common_android.DplusReactPackage
+import com.facebook.soloader.SoLoader
+import com.umeng.commonsdk.UMConfigure
+import com.umeng.commonsdk.UMConfigure.DEVICE_TYPE_PHONE
+import cn.bohe.quanwei.common_android.RNUMConfigure
 
 class MainApplication : Application(), ReactApplication {
 
@@ -18,6 +23,7 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
+              add(DplusReactPackage()) // Example of adding a custom package
             }
 
         override fun getJSMainModuleName(): String = "index"
@@ -34,5 +40,9 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     loadReactNative(this)
+    SoLoader.init(this, /* native exopackage */ false);
+    RNUMConfigure.init(this, "6880b713bc47b67d83bb56bc", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
+            null);
+    //6880b713bc47b67d83bb56bc
   }
 }
