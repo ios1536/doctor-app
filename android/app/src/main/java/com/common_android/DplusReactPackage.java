@@ -36,6 +36,7 @@ public class DplusReactPackage implements ReactPackage {
         // modules.add(new ShareModule(reactContext));
         // modules.add(new PushModule(reactContext));
         modules.add(new AnalyticsModule(reactContext));
+        modules.add(new UMInitModule(reactContext)); // 添加友盟初始化模块
         return modules;
     }
 }

@@ -11,6 +11,7 @@ import {
   Image,
   Platform,
   Linking,
+  StatusBar,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -20,6 +21,7 @@ import { getBannerData, getHotNewsData, getSelectedDoctors, getHotDiseases, getS
 import Banner from '../components/Banner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isPersonalizedRecommendationEnabled, filterContentByRecommendation } from '../utils/recommendationUtils';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const BANNER_WIDTH = width - 30; // 考虑左右padding
@@ -56,6 +58,15 @@ const HomeScreen = ({ navigation }: any) => {
     };
     checkRecommendationSetting();
   }, []);
+
+  // 使用 useFocusEffect 来管理状态栏样式
+  useFocusEffect(
+    React.useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('dark-content');
+      StatusBar.setBackgroundColor('#ffffff');
+    }, [])
+  );
 
   // 获取 banner 数据
   useEffect(() => {
@@ -267,14 +278,12 @@ const HomeScreen = ({ navigation }: any) => {
     const checkVersion = async () => {
       try {
         // 获取当前平台和版本号
-        const platform = Platform.OS; // 'ios' 或 'android'
         const currentVersion = '1.0.1'; // 固定版本号
         
         console.log('=== 版本检查信息 ===');
-        console.log('平台:', platform);
         console.log('当前版本号:', currentVersion);
         
-        const versionData = await checkAppVersion(platform, currentVersion);
+        const versionData = await checkAppVersion(currentVersion);
         
         console.log('=== 版本接口返回数据 ===');
         console.log('完整响应:', JSON.stringify(versionData, null, 2));
@@ -429,6 +438,11 @@ const HomeScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="#ffffff"
+        translucent={false}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.paddingContainer}>
           {/* Top Header */}

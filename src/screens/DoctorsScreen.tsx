@@ -15,6 +15,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Video, {VideoRef} from 'react-native-video';
@@ -296,6 +297,21 @@ const DoctorsScreen: FC = () => {
   // 监听页面焦点变化，当离开页面时暂停所有视频
   useFocusEffect(
     useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('light-content');
+      StatusBar.setBackgroundColor('transparent');
+      
+      return () => {
+        // 当页面失去焦点时，恢复默认状态栏样式
+        StatusBar.setBarStyle('dark-content');
+        StatusBar.setBackgroundColor('#ffffff');
+      };
+    }, [])
+  );
+
+  // 监听页面焦点变化，当离开页面时暂停所有视频
+  useFocusEffect(
+    useCallback(() => {
       // 页面获得焦点时，不自动播放，保持暂停状态
       if (videoData.length > 0) {
         setCurIndex(-1); // 设置为-1，表示没有当前播放的视频
@@ -320,6 +336,7 @@ const DoctorsScreen: FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <View style={styles.listContainer} onLayout={onLayout}>
         <FlatList
           data={videoData}

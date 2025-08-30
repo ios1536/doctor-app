@@ -31,5 +31,19 @@ target 'DoctorProject' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    
+    # 添加 Hermes dSYM 相关配置
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+        
+        # 确保 Hermes 相关的调试信息被正确生成
+        if target.name == 'hermes-engine'
+          config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'
+          config.build_settings['INFOPLIST_FILE'] = ''
+        end
+      end
+    end
   end
 end

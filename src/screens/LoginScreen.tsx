@@ -11,8 +11,10 @@ import {
   Alert,
   ActivityIndicator,
   Linking,
+  StatusBar,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const LoginScreen = ({ navigation }: any) => {
   const [phone, setPhone] = useState('');
@@ -21,6 +23,15 @@ const LoginScreen = ({ navigation }: any) => {
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [isAgreedToTerms, setIsAgreedToTerms] = useState(false);
+
+  // 使用 useFocusEffect 来管理状态栏样式
+  useFocusEffect(
+    React.useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('dark-content');
+      StatusBar.setBackgroundColor('#ffffff');
+    }, [])
+  );
 
   const sendVerificationCode = async () => {
     if (!phone) {
@@ -159,6 +170,7 @@ const LoginScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}

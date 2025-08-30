@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import PersonalizedRecommendationSwitch from '../components/PersonalizedRecommendationSwitch';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -30,6 +31,21 @@ const ProfileScreen = ({ navigation }: any) => {
 
     return unsubscribe;
   }, [navigation]);
+
+  // 使用 useFocusEffect 来管理状态栏样式
+  useFocusEffect(
+    React.useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('light-content');
+      StatusBar.setBackgroundColor('#1E90FF');
+      
+      return () => {
+        // 当页面失去焦点时，恢复默认状态栏样式
+        StatusBar.setBarStyle('dark-content');
+        StatusBar.setBackgroundColor('#ffffff');
+      };
+    }, [])
+  );
 
   const checkLoginStatus = async () => {
     try {
@@ -214,7 +230,6 @@ const ProfileScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header Section */}
         <View style={styles.header}>
@@ -257,6 +272,17 @@ const ProfileScreen = ({ navigation }: any) => {
                 console.log('个性化推荐开关状态:', enabled);
               }}
             />
+          </View>
+
+          {/* 医疗信息引用 */}
+          <View style={styles.sectionCard}>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigation.navigate('MedicalCitation')}
+            >
+              <Text style={styles.menuItemText}>医疗信息引用</Text>
+              <Icon name="chevron-right" size={20} color="#CCC" />
+            </TouchableOpacity>
           </View>
 
           {isLoggedIn ? (
@@ -332,6 +358,7 @@ const styles = StyleSheet.create({
   menuItem: {
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'space-between', // Added to align icon to the right
       paddingVertical: 15,
       borderBottomWidth: 1,
       borderBottomColor: '#F5F5F5',

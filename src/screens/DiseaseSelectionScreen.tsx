@@ -8,8 +8,10 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useFocusEffect } from '@react-navigation/native';
 
 const diseaseData = [
   {
@@ -63,6 +65,15 @@ const DiseaseSelectionScreen = ({ navigation }: any) => {
   const [activeCategory, setActiveCategory] = useState(diseaseData[0].category);
   const selectedSymptoms = diseaseData.find(d => d.category === activeCategory)?.symptoms || [];
 
+  // 使用 useFocusEffect 来管理状态栏样式
+  useFocusEffect(
+    React.useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('dark-content');
+      StatusBar.setBackgroundColor('#ffffff');
+    }, [])
+  );
+
   const handleSymptomPress = (symptomName: string) => {
     Alert.alert('页面跳转提示', `即将为您查找关于"${symptomName}"的信息`, [
       {
@@ -78,6 +89,11 @@ const DiseaseSelectionScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="#ffffff"
+        translucent={false}
+      />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="chevron-left" size={30} color="#000" />

@@ -13,6 +13,7 @@ import DoctorsScreen from '../screens/DoctorsScreen';
 import HealthTalksScreen from '../screens/HealthTalksScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DiseaseSelectionScreen from '../screens/DiseaseSelectionScreen';
+import MedicalCitationScreen from '../screens/MedicalCitationScreen';
 import { Linking } from 'react-native';
 import { Alert } from 'react-native';
 
@@ -22,6 +23,7 @@ export type RootStackParamList = {
   Main: undefined; // This will be the Tab Navigator
   WebView: { title: string; url: string };
   DiseaseSelection: undefined;
+  MedicalCitation: undefined;
 };
 
 export type MainTabParamList = {
@@ -215,7 +217,7 @@ const AppNavigator = ({ navigationRef, isPrivacyAgreed = true }: AppNavigatorPro
             Alert.alert('提示', `不支持的链接格式: ${url}`);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('解析URL失败:', error);
         Alert.alert('错误', '无法解析链接');
       }
@@ -250,6 +252,7 @@ const AppNavigator = ({ navigationRef, isPrivacyAgreed = true }: AppNavigatorPro
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Main" component={MainTabNavigator} />
       <Stack.Screen name="DiseaseSelection" component={DiseaseSelectionScreen} />
+      <Stack.Screen name="MedicalCitation" component={MedicalCitationScreen} />
       <Stack.Screen
         name="WebView"
         component={WebViewScreen}

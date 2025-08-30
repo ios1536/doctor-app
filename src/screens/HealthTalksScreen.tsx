@@ -10,9 +10,11 @@ import {
   Image,
   RefreshControl,
   ActivityIndicator,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 interface Article {
   uuid: string;
@@ -183,6 +185,15 @@ const HealthTalksScreen = () => {
     fetchArticles();
   }, [fetchArticles]);
 
+  // 使用 useFocusEffect 来管理状态栏样式
+  useFocusEffect(
+    React.useCallback(() => {
+      // 当页面获得焦点时，设置状态栏样式
+      StatusBar.setBarStyle('dark-content');
+      StatusBar.setBackgroundColor('#ffffff');
+    }, [])
+  );
+
   const renderArticle = useCallback(({ item }: { item: Article }) => (
     <TouchableOpacity 
       style={styles.articleCard}
@@ -192,6 +203,15 @@ const HealthTalksScreen = () => {
       <View style={styles.articleTextContainer}>
         <Text style={styles.articleTitle} numberOfLines={2}>{item.title}</Text>
         <Text style={styles.articleSummary} numberOfLines={2}>{item.description}</Text>
+        
+        {/* 添加引用信息 */}
+        <View style={styles.citationContainer}>
+          <Text style={styles.citationLabel}>信息来源：</Text>
+          <Text style={styles.citationText}>
+            {item.doctor.hospital_name || '权威医疗机构'} | {item.doctor.zname} {item.doctor.position_name}
+          </Text>
+        </View>
+        
         <View style={styles.articleMeta}>
           <View style={styles.doctorInfo}>
             <Image 
@@ -205,7 +225,7 @@ const HealthTalksScreen = () => {
           </View>
           {item.doctor.hospital_name && (
             <Text style={styles.hospitalName}>
-              {' '}
+              {item.doctor.hospital_name}
             </Text>
           )}
         </View>
@@ -231,6 +251,15 @@ const HealthTalksScreen = () => {
       <View style={styles.voiceTextContainer}>
         <Text style={styles.voiceTitle} numberOfLines={2}>{item.title}</Text>
         <Text style={styles.voiceSummary} numberOfLines={2}>{item.description}</Text>
+        
+        {/* 添加引用信息 */}
+        <View style={styles.citationContainer}>
+          <Text style={styles.citationLabel}>信息来源：</Text>
+          <Text style={styles.citationText}>
+            {item.doctor.hospital_name || '权威医疗机构'} | {item.doctor.zname} {item.doctor.position_name}
+          </Text>
+        </View>
+        
         <View style={styles.voiceMeta}>
           <View style={styles.doctorInfo}>
             <Image 
@@ -244,7 +273,7 @@ const HealthTalksScreen = () => {
           </View>
           {item.doctor.hospital_name && (
             <Text style={styles.hospitalName}>
-              {' '}
+              {item.doctor.hospital_name}
             </Text>
           )}
         </View>
@@ -270,6 +299,19 @@ const HealthTalksScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="#ffffff"
+        translucent={false}
+      />
+      
+      {/* 医疗信息免责声明 */}
+      <View style={styles.disclaimerContainer}>
+        <Text style={styles.disclaimerText}>
+          ⚠️ 本应用提供的医疗健康信息仅供参考，不能替代专业医生的诊断和治疗建议。如有健康问题，请及时就医。
+        </Text>
+      </View>
+      
       {/* Category Tabs */}
       <View style={styles.categoryContainer}>
         <ScrollView 
@@ -362,6 +404,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+  },
+  disclaimerContainer: {
+    backgroundColor: '#FFFBE6', // 浅黄色背景
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFE082', // 浅黄色边框
+  },
+  disclaimerText: {
+    fontSize: 13,
+    color: '#FF9800', // 橙色文字
+    textAlign: 'center',
+    lineHeight: 18,
   },
   categoryContainer: {
     borderBottomWidth: 1,
@@ -511,6 +567,21 @@ const styles = StyleSheet.create({
   voiceImage: {
     width: '100%',
     height: '100%',
+  },
+  citationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  citationLabel: {
+    fontSize: 12,
+    color: '#999',
+    marginRight: 4,
+  },
+  citationText: {
+    fontSize: 12,
+    color: '#666',
   },
 
   separator: {

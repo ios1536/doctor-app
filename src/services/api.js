@@ -1,10 +1,32 @@
 // API 服务文件
 const BASE_URL = 'https://bhapp.bohe.cn';
 
+// 获取平台信息
+const getPlatform = () => {
+  // 使用React Native的Platform API检测平台
+  try {
+    const { Platform } = require('react-native');
+    const platform = Platform.OS; // 返回 'ios' 或 'android'
+    console.log('📱 检测到平台:', platform);
+    return platform;
+  } catch (error) {
+    console.warn('⚠️ 无法检测平台，使用默认值android');
+    return 'android';
+  }
+};
+
 // 通用请求方法
 const request = async (url, options = {}) => {
   try {
-    const response = await fetch(url, {
+    // 添加platform参数到URL
+    const platform = getPlatform();
+    const separator = url.includes('?') ? '&' : '?';
+    const urlWithPlatform = `${url}${separator}platform=${platform}`;
+    
+    console.log('🌐 API请求:', urlWithPlatform);
+    console.log('📱 平台:', platform);
+    
+    const response = await fetch(urlWithPlatform, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -141,8 +163,9 @@ export const getNavData = async () => {
 };
 
 // 版本检查API
-export const checkAppVersion = async (platform: string, currentVersion: string) => {
+export const checkAppVersion = async (currentVersion: string) => {
   try {
+    const platform = getPlatform();
     console.log('=== 版本检查API请求 ===');
     console.log('请求URL:', `${BASE_URL}/article_api/app/version`);
     console.log('请求方法:', 'POST');
@@ -223,4 +246,5 @@ export const getVideoList = async (page = 1, uuid = '') => {
 
 export default {
   getBannerData,
+  getPlatform, // 导出平台检测函数，方便测试
 }; 

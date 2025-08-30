@@ -24,6 +24,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-DoctorProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DoctorProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = DoctorProject/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DoctorProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C4C077BA2E4F19E00045ECDA /* DoctorProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DoctorProject.entitlements; path = DoctorProject/DoctorProject.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -42,6 +43,7 @@
 		13B07FAE1A68108700A75B9A /* DoctorProject */ = {
 			isa = PBXGroup;
 			children = (
+				C4C077BA2E4F19E00045ECDA /* DoctorProject.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -267,8 +269,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XA4ARX3QKH;
+				CODE_SIGN_ENTITLEMENTS = DoctorProject/DoctorProject.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 6Z752C96YD;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DoctorProject/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "博禾医生";
@@ -278,7 +283,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -286,6 +291,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.bohe.quanwei;
 				PRODUCT_NAME = DoctorProject;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -298,8 +304,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XA4ARX3QKH;
+				CODE_SIGN_ENTITLEMENTS = DoctorProject/DoctorProject.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 6Z752C96YD;
 				INFOPLIST_FILE = DoctorProject/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "博禾医生";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -308,7 +317,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -316,6 +325,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.bohe.quanwei;
 				PRODUCT_NAME = DoctorProject;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
