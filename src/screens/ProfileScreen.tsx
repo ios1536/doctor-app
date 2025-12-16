@@ -275,7 +275,7 @@ const ProfileScreen = ({ navigation }: any) => {
           </View>
 
           {/* 医疗信息引用 */}
-          <View style={styles.sectionCard}>
+          {/* <View style={styles.sectionCard}>
             <TouchableOpacity 
               style={styles.menuItem} 
               onPress={() => navigation.navigate('MedicalCitation')}
@@ -283,7 +283,8 @@ const ProfileScreen = ({ navigation }: any) => {
               <Text style={styles.menuItemText}>医疗信息引用</Text>
               <Icon name="chevron-right" size={20} color="#CCC" />
             </TouchableOpacity>
-          </View>
+          </View> */}
+        
 
           {isLoggedIn ? (
             <>

@@ -306,11 +306,13 @@ const HealthTalksScreen = () => {
       />
       
       {/* 医疗信息免责声明 */}
-      <View style={styles.disclaimerContainer}>
+      {/*
+        <View style={styles.disclaimerContainer}>
         <Text style={styles.disclaimerText}>
           ⚠️ 本应用提供的医疗健康信息仅供参考，不能替代专业医生的诊断和治疗建议。如有健康问题，请及时就医。
         </Text>
       </View>
+      */}
       
       {/* Category Tabs */}
       <View style={styles.categoryContainer}>
