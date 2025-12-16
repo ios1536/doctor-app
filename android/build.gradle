@@ -13,6 +13,9 @@ buildscript {
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://repo1.maven.org/maven2/' }
+        // 添加华为和荣耀的maven库
+        maven { url 'https://developer.huawei.com/repo' }
+        maven { url 'https://developer.hihonor.com/repo' }
         google()
         mavenCentral()
     }
@@ -27,6 +30,9 @@ allprojects {
     google()
     jcenter()
     maven { url 'https://repo1.maven.org/maven2/' }
+    // 添加华为和荣耀的maven库
+    maven { url 'https://developer.huawei.com/repo' }
+    maven { url 'https://developer.hihonor.com/repo' }
   }
 }
 

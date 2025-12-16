@@ -125,6 +125,11 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+    
+    // 添加SDK所需的native库配置
+    packagingOptions {
+        doNotStrip "*/*/libijiami_sdk_enc.so"
+    }
 }
 
 dependencies {
@@ -136,4 +141,11 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    
+    // 添加华为和荣耀的SDK依赖
+    implementation "com.huawei.hms:ads-identifier:3.4.62.300"
+    implementation 'com.hihonor.mcs:ads-identifier:1.0.2.301'
+    
+    // 添加本地SDK依赖
+    implementation files('libs/sspwlthsdk-1.0.7.aar')
 }

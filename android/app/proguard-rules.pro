@@ -8,3 +8,15 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+# SDK所需的混淆规则
+-keep class com.theme.**{*;}
+-keep class ijiami_sdk_enc.**{*;}
+-keep class essos.com.**{*;}
+-keep class com.a.a.**{*;}
+-keep class com.android.**{*;}
+-keep class com.huawei.**{*;}
+-keep class com.hihonor.**{*;}
+-keep class **.R$* {
+    *;
+}
