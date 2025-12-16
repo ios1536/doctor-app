@@ -425,6 +425,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
     paddingTop: 20,
+    marginTop: 10,
   },
   categoryScroll: {
     paddingHorizontal: 15,
