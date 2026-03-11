@@ -240,7 +240,7 @@ const AppNavigator = ({ navigationRef, isPrivacyAgreed = true }: AppNavigatorPro
   }, []);
 
   if (initialRoute === null || !isPrivacyAgreed) {
-    return null; // 等待隐私政策同意或加载中
+    return <></>; // 等待隐私政策同意或加载中
   }
 
   return (
@@ -265,4 +265,4 @@ const AppNavigator = ({ navigationRef, isPrivacyAgreed = true }: AppNavigatorPro
   );
 };
 
-export default AppNavigator; 
+export default AppNavigator;
