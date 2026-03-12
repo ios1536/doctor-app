@@ -20,3 +20,10 @@
 -keep class **.R$* {
     *;
 }
+
+# AD3核心混淆规则，必加
+-keep class com.yd.** {*;}
+# 桥接模块不混淆（防止RN找不到）
+-keep class cn.bohe.quanwei.ad3.AD3SplashModule {*;}
+-keep class cn.bohe.quanwei.ad3.AD3SplashPackage {*;}
+-keep class cn.bohe.quanwei.ad3.AD3SplashManager {*;}
