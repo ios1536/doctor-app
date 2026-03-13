@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform } from 'react-native';
 import umInitModule from './src/types/UMInitModule';
 import { testUMInitModule, testUMInitWithFullParams, checkUMInitModuleStatus } from './src/utils/umInitTest';
+import { NativeModules } from 'react-native';
+const { PrivacySyncModule } = NativeModules;
 
 const App = () => {
   const navigationRef = useRef<NavigationContainerRef<RootStackParamList> | null>(null);
@@ -157,8 +159,18 @@ const App = () => {
     try {
       await AsyncStorage.setItem('privacyAgreed', 'true');
       console.log('💾 已保存用户同意状态到本地存储');
+      //同步状态到原生SharedPreferences
+      if (PrivacySyncModule?.setPrivacyAgreed) {
+        const syncResult = await PrivacySyncModule.setPrivacyAgreed(true);
+        console.log('✅ 隐私协议状态同步到原生成功：', syncResult);
+      } else {
+        console.warn('⚠️ 原生PrivacySyncModule未找到，状态同步失败');
+      }
+
+      
       setShowPrivacyModal(false);
       setIsPrivacyAgreed(true);
+
       // 用户同意后初始化SDK
       console.log('🔄 准备初始化SDK...');
       await initializeSDK();

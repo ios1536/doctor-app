@@ -1,6 +1,8 @@
 package cn.bohe.quanwei // 必须和你的RN项目包名一致！
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,22 +32,45 @@ class SplashActivity : AppCompatActivity() {
   private val SPLASH_AD_KEY = "9f525ca64292750c"
   private val AD3_APP_ID = "c1309807af3901ff"
 
+  private val PRIVACY_PREF_NAME = "app_prefs"
+  private val PRIVACY_AGREED_KEY = "privacyAgreed"
+  private lateinit var privacySP: SharedPreferences
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    // 1. 绑定布局：RN项目中必须确保layout/activity_splash.xml存在
     setContentView(R.layout.activity_splash)
 
-    // 3. 初始化AD3 SDK（RN项目中需提前初始化）
-    initAD3Sdk()
+    // 初始化隐私协议存储（与RN项目共用SharedPreferences，状态同步）
+    initPrivacySP()
 
-    // 4. 初始化视图（适配RN项目的资源引用）
-    initView()
+    // 先判断隐私协议状态
+    checkPrivacyAgreement()
+  }
 
-    // 5. 延迟加载广告（避免布局未绘制完成）
-    loadAdWithDelay()
+  /** 初始化隐私协议存储（与RN项目保持一致，确保状态同步） */
+  private fun initPrivacySP() {
+    // 与RN的AsyncStorage不同，原生使用SharedPreferences存储，需确保RN端也同步该状态
+    privacySP = getSharedPreferences(PRIVACY_PREF_NAME, Context.MODE_PRIVATE)
+  }
 
-    // 6. 设置广告超时跳转
-    setAdTimeoutJump()
+  /** 核心新增：检查隐私协议状态 */
+  private fun checkPrivacyAgreement() {
+    val isAgreed = privacySP.getBoolean(PRIVACY_AGREED_KEY, false)
+    if (isAgreed) {
+      // 已同意：延迟加载广告（原有逻辑）
+      // Toast.makeText(this, "已同意隐私协议，加载开屏广告", Toast.LENGTH_SHORT).show()
+
+      // 初始化AD3 SDK（RN项目中需提前初始化）
+      initAD3Sdk()
+
+      // 初始化视图（适配RN项目的资源引用）
+      initView()
+      loadAdWithDelay()
+      setAdTimeoutJump()
+    } else {
+      // 未同意：直接跳首页（不加载广告）
+      // Toast.makeText(this, "未同意隐私协议，跳转到主页面", Toast.LENGTH_SHORT).show()
+      mainHandler.postDelayed({ doJumpToRN() }, 500) // 延迟500ms，避免跳转过于突兀
+    }
   }
 
   /** 初始化AD3 SDK（RN项目中需手动初始化，无BaseActivity的自动初始化） */
@@ -77,7 +102,7 @@ class SplashActivity : AppCompatActivity() {
             {
               if (llContainer == null) {
                 Toast.makeText(this, "广告容器未找到，直接跳RN主页面", Toast.LENGTH_SHORT).show()
-                jumpToRNMain() // 跳转到RN的MainActivity
+                doJumpToRN() // 跳转到RN的MainActivity
                 return@postDelayed
               }
               loadAd()
