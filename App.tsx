@@ -48,7 +48,6 @@ const App = () => {
         // 用户已同意隐私政策，初始化SDK
         console.log('✅ 用户已同意隐私政策，开始初始化SDK');
         initializeSDK();
-        initializeAdSDK();
         setIsPrivacyAgreed(true);
       } else {
         // 用户未同意隐私政策，显示弹窗
@@ -61,44 +60,6 @@ const App = () => {
       setShowPrivacyModal(true);
     }
   };
-
-  // 初始化芒果广告SDK
-  const initializeAdSDK = async () => {
-    console.log('🚀 开始初始化芒果广告SDK...');
-    console.log('📱 当前平台:', Platform.OS);
-    try {
-      if (Platform.OS === 'android') {
-        // Android平台：使用原生模块初始化
-        console.log('📱 Android平台：准备调用原生模块初始化芒果广告SDK');
-        console.log('🔧 检查原生模块是否存在...');
-        
-        // 检查原生模块是否可用
-        if (umInitModule && typeof umInitModule.initializeADSDK === 'function') {
-          console.log('✅ 原生模块检查通过，开始调用...');
-          
-          const result = await umInitModule.initializeADSDK();
-          console.log('✅ 原生模块初始化结果:', result);
-          console.log('🎉 原生模块初始化成功！');
-        } else {
-          console.error('❌ 原生模块不可用或方法不存在');
-          console.log('🔍 原生模块对象:', umInitModule);
-          throw new Error('原生模块不可用');
-        }
-      } else {
-        // iOS平台：使用JavaScript模块初始化
-        console.log('📱 iOS平台：调用JavaScript模块初始化芒果广告SDK');
-        //TODO 初始化芒果广告SDK
-      }
-      console.log('✅ 芒果广告SDK初始化成功');
-      
-    } catch (error: any) {
-      console.error('❌ 芒果广告SDK初始化失败:', error);
-      console.error('❌ 错误详情:', error.message);
-      console.error('❌ 错误堆栈:', error.stack);
-    }
-  };
-
-
 
   const initializeSDK = async () => {
     console.log('🚀 开始初始化友盟SDK...');
@@ -174,7 +135,6 @@ const App = () => {
       // 用户同意后初始化SDK
       console.log('🔄 准备初始化SDK...');
       await initializeSDK();
-      await initializeAdSDK();
     } catch (error) {
       console.error('❌ 保存隐私协议状态失败:', error);
     }

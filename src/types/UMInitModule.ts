@@ -18,11 +18,6 @@ interface UMInitModuleInterface {
    */
   initUMWithDefault(appKey: string): Promise<string>;
   
-  /**
-   * 初始化芒果广告SDK TODO 优化时单独拿出来写一个单独的模块文件
-   * @returns Promise<string> 初始化结果
-   */
-  initializeADSDK(): Promise<string>;
 }
 
 // 获取原生模块
