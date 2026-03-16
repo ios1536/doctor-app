@@ -85,10 +85,6 @@ android {
         versionCode 4
         versionName "1.0.4"
         multiDexEnabled true // 必须开启，解决类数超限
-
-        ndk{
-            abiFilters 'armeabi-v7a','arm64-v8a'
-        }
     }
     signingConfigs {
         debug {
@@ -130,16 +126,6 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    
-    // 添加SDK所需的native库配置
-    packagingOptions {
-                // 避免重复文件冲突
-                pickFirst 'lib/**/*.so'
-                pickFirst 'lib/*/libc++_shared.so'
-                pickFirst 'lib/*/libsgcore.so'
-                doNotStrip '*/armeabi-v7a/*.so'
-                doNotStrip '*/arm64-v8a/*.so'    
-            }
 
     // 解决Dex分包和AndroidX冲突
     dexOptions {
