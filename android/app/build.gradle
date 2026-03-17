@@ -132,6 +132,24 @@ android {
         javaMaxHeapSize "4g"
         preDexLibraries false
     }
+
+    // 在构建时分析 APK 组成
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == "release") {
+                output.outputFileName = "app-${variant.versionName}-${variant.buildType.name}.apk"
+                // 添加 APK 分析任务
+                variant.assembleProvider.get().doLast {
+                    def apkFile = output.outputFile
+                    if (apkFile.exists()) {
+                        exec {
+                            commandLine 'sh', '-c', "du -h ${apkFile}"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 // 确保libs目录被识别为本地仓库
 repositories {
