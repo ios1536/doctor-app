@@ -82,8 +82,8 @@ android {
         applicationId "cn.bohe.quanwei"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0.4"
+        versionCode 5
+        versionName "1.0.5"
         multiDexEnabled true // 必须开启，解决类数超限
 
         ndk{

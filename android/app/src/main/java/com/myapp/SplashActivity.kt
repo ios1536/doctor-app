@@ -153,6 +153,11 @@ class SplashActivity : AppCompatActivity() {
   /** 执行跳转：RN项目的核心是跳转到MainActivity（RN容器） */
   private fun doJumpToRN() {
     val intent = Intent(this, MainActivity::class.java)
+    // 添加标志位优化跳转
+    intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
     startActivity(intent)
     finish() // 关闭开屏页
   }
