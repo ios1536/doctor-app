@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -17,7 +15,6 @@ import com.yd.saas.base.interfaces.SpreadLoadListener
 import com.yd.saas.base.interfaces.SpreadLoadListener.SpreadAd
 import com.yd.saas.config.exception.YdError
 import com.yd.saas.ydsdk.YdSpread
-import com.yd.saas.ydsdk.manager.YdConfig
 
 // RN项目中继承AppCompatActivity
 class SplashActivity : AppCompatActivity() {
@@ -25,12 +22,9 @@ class SplashActivity : AppCompatActivity() {
   private var ivLogo: ImageView? = null
   private var ydSpread: YdSpread? = null
   private var canJump = false
-  private val mainHandler = Handler(Looper.getMainLooper())
-  private val AD_TIMEOUT_MS = 3000L // 广告超时时间3秒
 
   // AD3配置参数（与你项目一致）
-  private val SPLASH_AD_KEY = "9f525ca64292750c"
-  private val AD3_APP_ID = "c1309807af3901ff"
+  private val SPLASH_AD_KEY = "f8d58b244b5c6e1b"
 
   private val PRIVACY_PREF_NAME = "app_prefs"
   private val PRIVACY_AGREED_KEY = "privacyAgreed"
@@ -56,32 +50,13 @@ class SplashActivity : AppCompatActivity() {
   private fun checkPrivacyAgreement() {
     val isAgreed = privacySP.getBoolean(PRIVACY_AGREED_KEY, false)
     if (isAgreed) {
-      // 已同意：延迟加载广告（原有逻辑）
-      // Toast.makeText(this, "已同意隐私协议，加载开屏广告", Toast.LENGTH_SHORT).show()
-
-      // 初始化AD3 SDK（RN项目中需提前初始化）
-      initAD3Sdk()
+      // 已同意隐私协议：检查SDK是否已初始化，然后加载广告
+      // Toast.makeText(this, "已同意隐私协议，检查SDK状态并加载开屏广告", Toast.LENGTH_SHORT).show()
 
       // 初始化视图（适配RN项目的资源引用）
       initView()
-      loadAdWithDelay()
-      setAdTimeoutJump()
     } else {
-      // 未同意：直接跳首页（不加载广告）
-      // Toast.makeText(this, "未同意隐私协议，跳转到主页面", Toast.LENGTH_SHORT).show()
-      mainHandler.postDelayed({ doJumpToRN() }, 500) // 延迟500ms，避免跳转过于突兀
-    }
-  }
-
-  /** 初始化AD3 SDK（RN项目中需手动初始化，无BaseActivity的自动初始化） */
-  private fun initAD3Sdk() {
-    try {
-      // 替换为AD3 SDK的实际初始化方法（根据你的AD3文档调整）
-      YdConfig.getInstance().init(this, AD3_APP_ID)
-      Toast.makeText(this, "AD3 SDK初始化成功", Toast.LENGTH_SHORT).show()
-    } catch (e: Exception) {
-      e.printStackTrace()
-      Toast.makeText(this, "AD3 SDK初始化失败：${e.message}", Toast.LENGTH_SHORT).show()
+      doJumpToRN()
     }
   }
 
@@ -94,21 +69,27 @@ class SplashActivity : AppCompatActivity() {
     // RN项目中若没有自定义Logo，使用应用图标替代
     ivLogo?.setImageResource(R.mipmap.ic_launcher)
             ?: run { Toast.makeText(this, "Logo视图未找到，不影响广告展示", Toast.LENGTH_SHORT).show() }
-  }
+    llContainer?.post {
+      if (llContainer == null) {
+        doJumpToRN() // 跳转到RN的MainActivity
+        return@post
+      }
 
-  /** 延迟加载广告：适配RN项目的布局绘制时序 */
-  private fun loadAdWithDelay() {
-    mainHandler.postDelayed(
-            {
-              if (llContainer == null) {
-                Toast.makeText(this, "广告容器未找到，直接跳RN主页面", Toast.LENGTH_SHORT).show()
-                doJumpToRN() // 跳转到RN的MainActivity
-                return@postDelayed
-              }
-              loadAd()
-            },
-            50
-    )
+      // 检查是否同意隐私协议
+      val isAgreed = privacySP.getBoolean(PRIVACY_AGREED_KEY, false)
+      if (!isAgreed) {
+        doJumpToRN()
+        return@post
+      }
+
+      // 检查 SDK 是否已在 MainApplication 中初始化
+      if (!MainApplication.isAd3SdkInitialized) {
+        doJumpToRN()
+        return@post
+      }
+
+      loadAd()
+    }
   }
 
   /** 加载开屏广告：适配RN项目的广告加载逻辑 */
@@ -125,35 +106,26 @@ class SplashActivity : AppCompatActivity() {
                                     spreadAd.show(it)
                                     ivLogo?.visibility = View.GONE // 隐藏Logo
                                   }
-                                          ?: jumpToRNMain()
+                                          ?: doJumpToRN()
                                 }
                               }
                       )
                       .setSpreadListener(
                               object : AdViewSpreadListener {
-                                override fun onAdDisplay() {
-                                  Toast.makeText(this@SplashActivity, "广告展示成功", Toast.LENGTH_SHORT)
-                                          .show()
-                                }
+                                override fun onAdDisplay() {}
 
                                 override fun onAdClose() {
-                                  Toast.makeText(this@SplashActivity, "广告关闭", Toast.LENGTH_SHORT)
-                                          .show()
-                                  doJumpToRN() // 跳RN主页面
+                                  jumpToRNMain() // 跳RN主页面
                                 }
 
-                                override fun onAdClick(url: String?) {
-                                  Toast.makeText(this@SplashActivity, "广告点击", Toast.LENGTH_SHORT)
-                                          .show()
-                                }
+                                override fun onAdClick(url: String?) {}
 
                                 override fun onAdFailed(error: YdError?) {
+                                  val errorCode = error?.code ?: -1
                                   val errorMsg = error?.msg ?: "未知错误"
-                                  Toast.makeText(
-                                                  this@SplashActivity,
-                                                  "广告加载失败：$errorMsg",
-                                                  Toast.LENGTH_SHORT
-                                          )
+                                  val fullError = "广告加载失败 [错误码:$errorCode]: $errorMsg"
+
+                                  Toast.makeText(this@SplashActivity, fullError, Toast.LENGTH_LONG)
                                           .show()
 
                                   doJumpToRN() // 跳转到RN的MainActivity
@@ -165,34 +137,21 @@ class SplashActivity : AppCompatActivity() {
       ydSpread?.requestSpread()
     } catch (e: Exception) {
       e.printStackTrace()
-      Toast.makeText(this, "广告初始化异常：${e.message}", Toast.LENGTH_SHORT).show()
-      jumpToRNMain()
+      doJumpToRN()
     }
-  }
-
-  /** 设置广告超时跳转：RN项目中必须确保超时后跳转到MainActivity */
-  private fun setAdTimeoutJump() {
-    mainHandler.postDelayed(
-            {
-              if (!canJump) {
-                jumpToRNMain()
-              }
-            },
-            AD_TIMEOUT_MS
-    )
   }
 
   /** 跳转RN主页面 RN的MainActivity */
   private fun jumpToRNMain() {
-    if (canJump) return
-    canJump = true
-    doJumpToRN()
+    if (canJump) {
+      doJumpToRN()
+    } else {
+      canJump = true
+    }
   }
 
   /** 执行跳转：RN项目的核心是跳转到MainActivity（RN容器） */
   private fun doJumpToRN() {
-    mainHandler.removeCallbacksAndMessages(null)
-    // 关键：跳转到RN的MainActivity（而非原生的AdsIndexActivity）
     val intent = Intent(this, MainActivity::class.java)
     startActivity(intent)
     finish() // 关闭开屏页
@@ -222,7 +181,6 @@ class SplashActivity : AppCompatActivity() {
   /** 销毁资源：RN项目中必须清除所有任务，避免内存泄漏 */
   override fun onDestroy() {
     super.onDestroy()
-    mainHandler.removeCallbacksAndMessages(null)
     try {
       ydSpread?.destroy()
     } catch (e: Exception) {

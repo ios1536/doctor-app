@@ -85,6 +85,10 @@ android {
         versionCode 4
         versionName "1.0.4"
         multiDexEnabled true // 必须开启，解决类数超限
+
+        ndk{
+            abiFilters 'armeabi-v7a','arm64-v8a'
+        }
     }
     signingConfigs {
         debug {
