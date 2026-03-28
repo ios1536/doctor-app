@@ -104,7 +104,7 @@ class MainApplication : Application(), ReactApplication {
   /** 初始化AD3 SDK */
   private fun initAD3Sdk() {
     try {
-      YdConfig.getInstance().init(this, AD3_APP_ID, "default", true)
+      YdConfig.getInstance().init(this, AD3_APP_ID)
       isAd3SdkInitialized = true
       Log.d(TAG, "✅ AD3 SDK 初始化成功")
     } catch (e: Exception) {
